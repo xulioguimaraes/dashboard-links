@@ -5,11 +5,24 @@ header.header {
   > div {
     max-width: 1120px;
     margin: 0 auto;
+    color: azure;
 
     padding: 2rem 1rem 12rem;
 
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
+    section{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      color: azure;
+      img{
+        max-width: 3rem;
+        border-radius: 50%;
+      }
+    }
   }
 }

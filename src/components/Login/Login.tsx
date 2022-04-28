@@ -1,17 +1,25 @@
+import { useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import { useAuth } from "../../hooks/useAuth"
 
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 export const Login = () => {
+    const { user, singInWithGoogle } = useAuth()
+    const navigate = useNavigate()
+    useEffect(() => {
+        if (user) {
+            return  navigate("/home")
+        }
+    }, [user])
     const handleLogin = () => {
-      
-
-      
+        if (!user) {
+            return  singInWithGoogle()
+        } 
     }
     return (
         <div>
-            <button onClick={handleLogin}>
+           {user ? <h1>Bem Vindo. {user.name}</h1>: <button onClick={handleLogin}>
                 faça login com Google
-            </button>
-
+            </button>}
         </div>
     )
 }
