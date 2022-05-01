@@ -8,6 +8,7 @@ import { child, get, off, onChildAdded, onChildChanged, onChildRemoved, ref, rem
 
 import { database } from '../services/firebase';
 import { useAuth } from '../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 interface Task {
   id: number;
@@ -16,58 +17,51 @@ interface Task {
 }
 
 export function TaskList() {
-  const { user } = useAuth()
+  const { user, singOutGoogle } = useAuth()
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTaskTitle, setNewTaskTitle] = useState('');
-  const [isEmpry, setIsEmpry] = useState(true)
   const [handleComplete, setHandleComplete] = useState(true)
+  
   const [handleNewTask, setHandleNewTask] = useState(true)
   const roomsToDoref = ref(database, 'rooms/' + user?.id + "/to-do/")
   useEffect(() => {
     onChildAdded(roomsToDoref, (data) => {
-      console.log(data.val());
       const newTask = data.val()
       setTasks([...tasks, newTask])
     });
     off(roomsToDoref)
+    
   }, [handleNewTask])
   useEffect(() => {
     onChildChanged(roomsToDoref, (data) => {
       const task = data.val() as Task
+      console.log(task);
+      
       setTasks([...tasks, task])
     });
     off(roomsToDoref)
+   
   }, [handleComplete])
   useEffect(() => {
-    onChildRemoved(roomsToDoref, (data) => {
-      console.log(data.val());
-      console.log(data.key);
-
-      // const taskRemoved = data.val() as Task
-      // const arrayTasks = tasks.filter(item => item.id !== taskRemoved.id)
-      // setTasks(arrayTasks)
-    });
-    off(roomsToDoref)
-  }, [tasks])
-  useEffect(() => {
-    get(child(ref(database), 'rooms/' + user?.id + "/to-do")).then((snapshot) => {
-      if (snapshot.exists()) {
-        let task = snapshot.val() as Task[]
-        task = Object.keys(task).map((index) => {
-
-          return task[+index]
-        })
-
-        task = task.filter(item => item)
-        setIsEmpry(false)
-        setTasks(task)
-      } else {
-        console.log("No data available");
-      }
-    }).catch((error) => {
-      console.error(error);
-    });
-  }, [])
+    if (user) {
+      get(child(ref(database), 'rooms/' + user?.id + "/to-do")).then((snapshot) => {
+        if (snapshot.exists()) {
+          let task = snapshot.val() as Task[]
+          task = Object.keys(task).map((index) => {
+            return task[+index]
+          })
+          task = task.filter(item => item)
+          setTasks(task)
+        } else {
+          console.log("No data available");
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
+    }else{
+      singOutGoogle()
+    }
+  }, [user])
   function handleCreateNewTask() {
     // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
     if (newTaskTitle.trim() === "") {
@@ -119,7 +113,7 @@ export function TaskList() {
         <div className="input-group">
           <input
             type="text"
-            placeholder="Adicionar novo todo"
+            placeholder="Adicionar nova task"
             onChange={(e) => setNewTaskTitle(e.target.value)}
             value={newTaskTitle}
           />
@@ -148,13 +142,14 @@ export function TaskList() {
 
               <button type="button" data-testid="remove-task-button" onClick={() => handleRemoveTask(task.id)}>
                 <FiTrash size={16} />
+               
               </button>
             </li>
           ))}
 
         </ul>
         {
-          isEmpry && <div>
+          tasks?.length ===0 && <div>
             <h1>Lista de tasks vazia</h1>
           </div>
         }
