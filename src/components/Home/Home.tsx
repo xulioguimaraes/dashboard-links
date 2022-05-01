@@ -5,10 +5,11 @@ import { Header } from '../Header'
 import { TaskList } from '../TaskList'
 
 export const Home = () => {
-  const { user } = useAuth()
+  const { user, singOutGoogle } = useAuth()
   const navigate = useNavigate()
   useEffect(() => {
     if (!user) {
+      singOutGoogle()
      return navigate("/")
     }
   }, [user])
