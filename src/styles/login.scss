@@ -1,0 +1,36 @@
+.loginContainer{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.loginContent{
+    display: grid;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem 3rem;
+    max-width: 400px;
+    background-color: var(--blue);
+    border-radius: 0.4rem;
+    h1{
+        text-align: center;
+        font-size: 3rem;
+        color: var(--shapes);
+
+        // color: var(--blue);
+    }
+    button{
+        height: 3rem;
+        border-radius: 25rem;
+        border: 0;
+        padding: 0 1.3rem;
+        font-size: 1.4rem;
+        color: var(--shapes);
+        background: #ea4335;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: .5rem;
+    }
+}
