@@ -17,11 +17,10 @@ interface Task {
 }
 
 export function TaskList() {
-  const { user, singOutGoogle } = useAuth()
+  const { user } = useAuth()
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [handleComplete, setHandleComplete] = useState(true)
-  
   const [handleNewTask, setHandleNewTask] = useState(true)
   const roomsToDoref = ref(database, 'rooms/' + user?.id + "/to-do/")
   useEffect(() => {
@@ -34,9 +33,7 @@ export function TaskList() {
   }, [handleNewTask])
   useEffect(() => {
     onChildChanged(roomsToDoref, (data) => {
-      const task = data.val() as Task
-      console.log(task);
-      
+      const task = data.val() as Task   
       setTasks([...tasks, task])
     });
     off(roomsToDoref)
@@ -58,8 +55,6 @@ export function TaskList() {
       }).catch((error) => {
         console.error(error);
       });
-    }else{
-      singOutGoogle()
     }
   }, [user])
   function handleCreateNewTask() {
