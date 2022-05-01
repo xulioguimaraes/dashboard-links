@@ -1,8 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import '../styles/tasklist.scss'
 
 import { FiTrash, FiCheckSquare } from 'react-icons/fi'
+
+import { child, get, off, onChildAdded, onChildChanged, onChildRemoved, ref, remove, set } from 'firebase/database';
+
+import { database } from '../services/firebase';
+import { useAuth } from '../hooks/useAuth';
 
 interface Task {
   id: number;
@@ -11,20 +16,70 @@ interface Task {
 }
 
 export function TaskList() {
+  const { user } = useAuth()
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTaskTitle, setNewTaskTitle] = useState('');
+  const [isEmpry, setIsEmpry] = useState(true)
+  const [handleComplete, setHandleComplete] = useState(true)
+  const [handleNewTask, setHandleNewTask] = useState(true)
+  const roomsToDoref = ref(database, 'rooms/' + user?.id + "/to-do/")
+  useEffect(() => {
+    onChildAdded(roomsToDoref, (data) => {
+      console.log(data.val());
+      const newTask = data.val()
+      setTasks([...tasks, newTask])
+    });
+    off(roomsToDoref)
+  }, [handleNewTask])
+  useEffect(() => {
+    onChildChanged(roomsToDoref, (data) => {
+      const task = data.val() as Task
+      setTasks([...tasks, task])
+    });
+    off(roomsToDoref)
+  }, [handleComplete])
+  useEffect(() => {
+    onChildRemoved(roomsToDoref, (data) => {
+      console.log(data.val());
+      console.log(data.key);
 
+      // const taskRemoved = data.val() as Task
+      // const arrayTasks = tasks.filter(item => item.id !== taskRemoved.id)
+      // setTasks(arrayTasks)
+    });
+    off(roomsToDoref)
+  }, [tasks])
+  useEffect(() => {
+    get(child(ref(database), 'rooms/' + user?.id + "/to-do")).then((snapshot) => {
+      if (snapshot.exists()) {
+        let task = snapshot.val() as Task[]
+        task = Object.keys(task).map((index) => {
+
+          return task[+index]
+        })
+
+        task = task.filter(item => item)
+        setIsEmpry(false)
+        setTasks(task)
+      } else {
+        console.log("No data available");
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
+  }, [])
   function handleCreateNewTask() {
     // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
     if (newTaskTitle.trim() === "") {
       return
     }
     const obj = {
-      id: tasks.length + 1,
+      id: tasks[tasks.length - 1]?.id ? tasks[tasks.length - 1]?.id + 1 : 1,
       title: newTaskTitle,
       isComplete: false
     }
-    setTasks([...tasks, obj])
+    setHandleNewTask(!handleNewTask)
+    writeTasks(obj)
     setNewTaskTitle('')
   }
 
@@ -34,15 +89,26 @@ export function TaskList() {
     arrayTasks.forEach(item => {
       if (item.id === id) {
         item.isComplete = !item.isComplete
+        taskCompletion(item)
       }
     })
-    setTasks(arrayTasks)
+    setHandleComplete(!handleComplete)
+  }
+  function writeTasks(tasksObj: Task) {
+    set(ref(database, 'rooms/' + user?.id + "/to-do/" + tasksObj.id), tasksObj);
+  }
+  function removeTasks(id: number) {
+    remove(ref(database, 'rooms/' + user?.id + "/to-do/" + id));
+  }
+  function taskCompletion(tasksObj: Task) {
+    set(ref(database, 'rooms/' + user?.id + "/to-do/" + tasksObj.id), tasksObj);
   }
 
   function handleRemoveTask(id: number) {
     // Remova uma task da listagem pelo ID
-    let arrayTasks = tasks.filter(item => item.id !== id)
+    const arrayTasks = tasks.filter(item => item.id !== id)
     setTasks(arrayTasks)
+    removeTasks(id)
   }
 
   return (
@@ -87,6 +153,11 @@ export function TaskList() {
           ))}
 
         </ul>
+        {
+          isEmpry && <div>
+            <h1>Lista de tasks vazia</h1>
+          </div>
+        }
       </main>
     </section>
   )
