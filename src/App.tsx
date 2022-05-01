@@ -21,14 +21,14 @@ function App() {
 
   return (
     <>
-      <AuthContextProvider>
-        <BrowserRouter>
+      <BrowserRouter>
+        <AuthContextProvider>
           <Routes>
             <Route path="/home" element={<Home />} />
             <Route path="/" element={<Login />} />
           </Routes>
-        </BrowserRouter>
-      </AuthContextProvider>
+        </AuthContextProvider>
+      </BrowserRouter>
     </>
   )
 }
