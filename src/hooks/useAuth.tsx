@@ -1,6 +1,7 @@
-import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup } from "firebase/auth"
+import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth"
 import { child, get, ref, set } from "firebase/database"
 import { createContext, ReactNode, useContext, useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { database } from "../services/firebase"
 
 type UserType = {
@@ -11,6 +12,7 @@ type UserType = {
 type AuthContextType = {
     user: UserType | undefined
     singInWithGoogle: () => void
+    singOutGoogle: () => void
 }
 type WriteUserDataType = {
 
@@ -23,6 +25,7 @@ interface IChildren {
 
 export const AuthContextProvider = ({ children }: IChildren) => {
     const [user, setUser] = useState<UserType>()
+    const navigate = useNavigate()
     const auth = getAuth()
     useEffect(() => {
         const onsub = onAuthStateChanged(auth, user => {
@@ -59,8 +62,13 @@ export const AuthContextProvider = ({ children }: IChildren) => {
             console.error(error);
         });
         return
-        
-      
+
+
+    }
+    const singOutGoogle = async () => {
+        const out = await signOut(auth) as undefined
+        setUser(out)
+        navigate('/')
     }
     const singInWithGoogle = () => {
         const provider = new GoogleAuthProvider();
@@ -80,7 +88,7 @@ export const AuthContextProvider = ({ children }: IChildren) => {
         })
     }
     return (
-        <AuthContext.Provider value={{ user, singInWithGoogle }}>
+        <AuthContext.Provider value={{ user, singInWithGoogle, singOutGoogle }}>
             {children}
         </AuthContext.Provider>
     )
