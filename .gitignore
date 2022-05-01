@@ -14,7 +14,7 @@ dist-ssr
 .github
 build
 *.env
-
+vercel.json
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
