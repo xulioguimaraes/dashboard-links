@@ -1,36 +1,37 @@
+import "./styles/global.scss";
 
-import './styles/global.scss'
-
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Home } from './components/Home/Home';
-import { Login } from './components/Login/Login';
-import { createContext, useState } from 'react';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { AuthContextProvider } from './hooks/useAuth';
-export const AuthContext = createContext({} as AuthContextType)
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Home } from "./components/Home/Home";
+import { Login } from "./components/Login/Login";
+import { createContext, useState } from "react";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { AuthContextProvider } from "./hooks/useAuth";
+import { ChakraProvider } from "@chakra-ui/react";
+export const AuthContext = createContext({} as AuthContextType);
 type UserType = {
-  id: string
-  name: string
-  avatar: string
-}
+  id: string;
+  name: string;
+  avatar: string;
+};
 type AuthContextType = {
-  user: UserType | undefined
-  singInWithGoogle: () => void
-}
+  user: UserType | undefined;
+  singInWithGoogle: () => void;
+};
 function App() {
-
   return (
     <>
       <BrowserRouter>
         <AuthContextProvider>
-          <Routes>
-            <Route  path="/" element={<Login />} />
-            <Route  path="home" element={<Home />} />
-          </Routes>
+          <ChakraProvider>
+            <Routes>
+              <Route path="/" element={<Login />} />
+              <Route path="home" element={<Home />} />
+            </Routes>
+          </ChakraProvider>
         </AuthContextProvider>
       </BrowserRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
