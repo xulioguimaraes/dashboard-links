@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import "../../styles/login.scss";
 import { FaGoogle } from "react-icons/fa";
 import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
 import imageHome from "../../images/login.png";
@@ -10,6 +9,7 @@ export const Login = () => {
   const { user, singInWithGoogle } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
+    console.log(user)
     if (user) {
       return navigate("/home");
     }

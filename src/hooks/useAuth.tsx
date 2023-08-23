@@ -57,13 +57,13 @@ export const AuthContextProvider = ({ children }: IChildren) => {
   }, []);
   function writeUserData(userId: string, name: string, imageUrl: string) {
     const dbRef = ref(database);
-    get(child(dbRef, `rooms/${userId}`))
+    get(child(dbRef, `links/${userId}`))
       .then((snapshot) => {
         if (snapshot.exists()) {
           // console.log(snapshot.val());
         } else {
           //criar sala para usuario
-          set(ref(database, "rooms/" + userId), {
+          set(ref(database, "links/" + userId), {
             username: name,
             id: userId,
             profile_picture: imageUrl,
