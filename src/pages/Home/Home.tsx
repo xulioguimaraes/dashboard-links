@@ -1,26 +1,9 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { Header } from "./components/Header";
-import { TaskList } from "../../components/TaskList";
-import {
-  Box,
-  Button,
-  Container,
-  FormControl,
-  FormLabel,
-  Heading,
-  IconButton,
-  Input,
-  Stack,
-  Switch,
-  Text,
-  Textarea,
-} from "@chakra-ui/react";
-import AvatarInput from "../../components/AvatarInput/AvatarInput";
-import { Label } from "../../components/Label/Label";
-import { InfoMain } from "./components/InfoMain/InfoMain";
-import { GrFormClose } from "react-icons/gr";
+import { Box, Button, Container, Heading, Stack, Text } from "@chakra-ui/react";
+
 export const Home = () => {
   const { user, singOutGoogle } = useAuth();
   const navigate = useNavigate();
@@ -30,66 +13,33 @@ export const Home = () => {
       return navigate("/");
     }
   }, [user]);
+  const pages = [
+    { name: "Informações principais", path: "/informacao-principal" },
+    { name: "Botões", path: "/botoes" },
+  ];
 
+  const handleGoPAge = (path: string) => {
+    navigate(path);
+  };
   return (
-    <Container>
-      <Header />
+    <>
       <Box my={4}>
         <Heading textAlign={"center"} size={"md"}>
           Bem vindo, {user?.name}
         </Heading>
       </Box>
-
-      <InfoMain />
-
-      <Stack
-        borderRadius={"base"}
-        border={"1px solid"}
-        borderColor={"gray.300"}
-        p={4}
-      >
-        <Heading fontWeight={"semibold"} size={"sm"}>
-          Botões
-        </Heading>
-        <Stack align={"center"} direction={"row"}>
-          <Text fontSize={"sm"}>Adicionar botões</Text>
-          <Button size={"sm"}> Adicionar</Button>
+      <Text mt={4} textAlign={"center"}>
+        Cadastros de informações
+      </Text>
+      <Container maxW="md">
+        <Stack mt={4} gap={1}>
+          {pages.map((item) => (
+            <Button key={item.path} onClick={() => handleGoPAge(item.path)}>
+              {item.name}
+            </Button>
+          ))}
         </Stack>
-
-        <Stack
-          borderRadius={"base"}
-          border={"1px solid"}
-          borderColor={"gray.300"}
-          my={2}
-          p={4}
-        >
-          <Stack direction={"row"} justify={"space-between"}>
-            <Text>Novo Botão</Text>
-            <IconButton size={"sm"} aria-label={"close"}>
-              <GrFormClose />
-            </IconButton>
-          </Stack>
-          <FormControl>
-            <Label label="Nome" />
-            <Input size={"sm"} />
-          </FormControl>
-          <FormControl>
-            <Label label="Link" />
-            <Input size={"sm"} />
-          </FormControl>
-          <Stack direction={"row"}>
-            <FormControl>
-              <Label label="Cor do botão" />
-              <Input type="color" size={"sm"} />
-            </FormControl>
-            <FormControl>
-              <Label label="Cor do texto do botão" />
-              <Input type="color" size={"sm"} />
-            </FormControl>
-          </Stack>
-          <Button>Salvar</Button>
-        </Stack>
-      </Stack>
-    </Container>
+      </Container>
+    </>
   );
 };

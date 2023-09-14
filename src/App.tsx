@@ -1,11 +1,11 @@
-
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Home } from "./pages/Home/Home";
 import { Login } from "./pages/Login/Login";
 import { createContext, useState } from "react";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { AuthContextProvider } from "./hooks/useAuth";
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, Container } from "@chakra-ui/react";
+import { routes } from "./routes";
+import { Header } from "./pages/Home/components/Header";
 export const AuthContext = createContext({} as AuthContextType);
 type UserType = {
   id: string;
@@ -22,10 +22,14 @@ function App() {
       <BrowserRouter>
         <AuthContextProvider>
           <ChakraProvider>
-            <Routes>
-              <Route path="/" element={<Login />} />
-              <Route path="home" element={<Home />} />
-            </Routes>
+            <Container>
+              <Header />
+              <Routes>
+                {routes.map((item) => (
+                  <Route path={item.path} element={item.element} />
+                ))}
+              </Routes>
+            </Container>
           </ChakraProvider>
         </AuthContextProvider>
       </BrowserRouter>
