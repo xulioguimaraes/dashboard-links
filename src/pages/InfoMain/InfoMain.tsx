@@ -1,9 +1,12 @@
 import {
+  Box,
   Button,
   FormControl,
   FormErrorMessage,
   Heading,
   Input,
+  Skeleton,
+  SkeletonCircle,
   Stack,
   Switch,
   Textarea,
@@ -19,6 +22,7 @@ import { useEffect, useState } from "react";
 import { child, get, ref, set } from "firebase/database";
 import { database } from "../../services/firebase";
 import { useAuth } from "../../hooks/useAuth";
+import { IsLoadingForm } from "./components/IsLoadingForm";
 const FILE = "/info-main";
 const registerFormSchema = z.object({
   name: z.string().min(3, {
@@ -34,13 +38,14 @@ type RegisterFormData = z.infer<typeof registerFormSchema>;
 
 export const InfoMain = () => {
   const [addIstagram, setAddInstagram] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+
   const { user } = useAuth();
   const toast = useToast();
 
   const {
     register,
     handleSubmit,
-    setValue,
     control,
     reset,
     setError,
@@ -55,12 +60,15 @@ export const InfoMain = () => {
     },
     resolver: zodResolver(registerFormSchema),
   });
+
   const resetData = (data: RegisterFormData) => {
     setAddInstagram(!data.addIstagram);
     reset(data);
   };
+
   useEffect(() => {
     if (user) {
+      setIsLoading(true);
       get(child(ref(database), "links/" + user?.id + FILE))
         .then((snapshot) => {
           if (snapshot.exists()) {
@@ -72,6 +80,9 @@ export const InfoMain = () => {
         })
         .catch((error) => {
           console.error(error);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   }, [user]);
@@ -79,8 +90,8 @@ export const InfoMain = () => {
   const handleBackHome = () => {
     navigate("/home");
   };
-  function writeTasks(tasksObj: RegisterFormData) {
-    set(ref(database, "links/" + user?.id + "/" + FILE), tasksObj);
+  function writeJob(data: RegisterFormData) {
+    set(ref(database, "links/" + user?.id + "/" + FILE), data);
   }
   const handleRegister = async (data: RegisterFormData) => {
     if (!addIstagram && !data.instagram) {
@@ -88,7 +99,7 @@ export const InfoMain = () => {
       return;
     }
     try {
-      writeTasks(data);
+      writeJob(data);
       toast({
         title: `Alterações salvas com sucesso`,
         status: "success",
@@ -104,103 +115,120 @@ export const InfoMain = () => {
     }
   };
   return (
-    <Stack
-      borderRadius={"base"}
-      border={"1px solid"}
-      borderColor={"gray.300"}
-      p={4}
-      as={"form"}
-      onSubmit={handleSubmit(handleRegister)}
-    >
-      <Heading fontWeight={"semibold"} size={"sm"}>
-        Informações principais
-      </Heading>
+    <>
+      {isLoading ? (
+        <IsLoadingForm />
+      ) : (
+        <>
+          <Stack
+            borderRadius={"base"}
+            border={"1px solid"}
+            borderColor={"gray.300"}
+            p={4}
+            as={"form"}
+            onSubmit={handleSubmit(handleRegister)}
+          >
+            <Heading fontWeight={"semibold"} size={"sm"}>
+              Informações principais
+            </Heading>
 
-      <Stack direction={"row"} spacing={6}>
-        <AvatarInput />
-        <Stack w={"full"}>
-          <FormControl isRequired isInvalid={!!errors.name}>
-            <Label label="Nome" />
-            <Input {...register("name")} size={"sm"} type="text" />
-            {!!errors.name && (
-              <FormErrorMessage fontSize={"xs"}>
-                {errors.name.message}
-              </FormErrorMessage>
-            )}
-          </FormControl>
-          <Stack direction={"row"} gap={4}>
-            <FormControl
-              w={"auto"}
-              flexWrap={"nowrap"}
-              whiteSpace={"nowrap"}
-              display="flex"
-              gap={3}
-              alignItems="center"
-            >
-              <Controller
-                control={control}
-                name="addIstagram"
-                render={({ field }) => (
-                  <>
-                    <Switch
-                      {...field}
-                      id="username"
-                      isChecked={field.value}
-                      value={field.value ? "true" : "false"}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        setAddInstagram((old) => !old);
-                      }}
+            <Stack direction={"row"} spacing={6}>
+              <AvatarInput />
+              <Stack w={"full"}>
+                <FormControl
+                  isDisabled={isSubmitting}
+                  isRequired
+                  isInvalid={!!errors.name}
+                >
+                  <Label label="Nome" />
+                  <Input {...register("name")} size={"sm"} type="text" />
+                  {!!errors.name && (
+                    <FormErrorMessage fontSize={"xs"}>
+                      {errors.name.message}
+                    </FormErrorMessage>
+                  )}
+                </FormControl>
+                <Stack direction={"row"} gap={4}>
+                  <FormControl
+                    w={"auto"}
+                    flexWrap={"nowrap"}
+                    whiteSpace={"nowrap"}
+                    display="flex"
+                    gap={3}
+                    alignItems="center"
+                    isDisabled={isSubmitting}
+                  >
+                    <Controller
+                      control={control}
+                      name="addIstagram"
+                      render={({ field }) => (
+                        <>
+                          <Switch
+                            {...field}
+                            id="username"
+                            isChecked={field.value}
+                            value={field.value ? "true" : "false"}
+                            onChange={(e) => {
+                              field.onChange(e);
+                              setAddInstagram((old) => !old);
+                            }}
+                          />
+                          <Label htmlFor="username" label="Adicionar @?" />
+                        </>
+                      )}
                     />
-                    <Label htmlFor="username" label="Adicionar @?" />
-                  </>
-                )}
+                  </FormControl>
+                  <FormControl
+                    w={"full"}
+                    isDisabled={addIstagram || isSubmitting}
+                    isRequired={!addIstagram}
+                    isInvalid={!!errors.instagram}
+                  >
+                    <Label label=" Seu principal @" />
+                    <Input
+                      {...register("instagram", {
+                        required: !addIstagram,
+                      })}
+                      size={"sm"}
+                      type="text"
+                    />
+                    {!!errors.instagram && (
+                      <FormErrorMessage fontSize={"xs"}>
+                        {errors.instagram.message}
+                      </FormErrorMessage>
+                    )}
+                  </FormControl>
+                </Stack>
+              </Stack>
+            </Stack>
+            <FormControl isDisabled={isSubmitting}>
+              <Label label="Resumo" />
+              <Textarea
+                {...register("resume")}
+                placeholder="Resumo sobre sua pagina"
               />
             </FormControl>
-            <FormControl
-              w={"full"}
-              isDisabled={addIstagram}
-              isRequired={!addIstagram}
-              isInvalid={!!errors.instagram}
-            >
-              <Label label=" Seu principal @" />
-              <Input
-                {...register("instagram", {
-                  required: !addIstagram,
-                })}
-                size={"sm"}
-                type="text"
-              />
-              {!!errors.instagram && (
-                <FormErrorMessage fontSize={"xs"}>
-                  {errors.instagram.message}
-                </FormErrorMessage>
-              )}
+            <FormControl isDisabled={isSubmitting}>
+              <Label label="Selecionar cor de fundo da pagina" />
+              <Input {...register("background")} type="color" size={"sm"} />
             </FormControl>
+            <Stack direction={"row"} justify={"space-between"}>
+              <Button isDisabled={isSubmitting} onClick={handleBackHome}>
+                Voltar
+              </Button>
+              <Button
+                onClick={handleSubmit(handleRegister)}
+                type="submit"
+                variant={"solid"}
+                colorScheme="blue"
+                isDisabled={isSubmitting}
+              >
+                Salvar
+              </Button>
+            </Stack>
           </Stack>
-        </Stack>
-      </Stack>
-      <FormControl>
-        <Textarea
-          {...register("resume")}
-          placeholder="Resumo sobre sua pagina"
-        />
-      </FormControl>
-      <FormControl>
-        <Label label="Selecionar cor de fundo da pagina" />
-        <Input {...register("background")} type="color" size={"sm"} />
-      </FormControl>
-      <Stack direction={"row"} justify={"space-between"}>
-        <Button onClick={handleBackHome}>Voltar</Button>
-        <Button
-          onClick={handleSubmit(handleRegister)}
-          type="submit"
-          variant={"solid"}
-          colorScheme="blue"
-        >
-          Salvar
-        </Button>
-      </Stack>
-    </Stack>
+        </>
+      )}
+    </>
   );
 };

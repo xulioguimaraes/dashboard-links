@@ -5,10 +5,6 @@ import { Login } from "../pages/Login/Login";
 
 export const routes = [
   {
-    element: <Login />,
-    path: "/",
-  },
-  {
     element: <Home />,
     path: "/home",
   },

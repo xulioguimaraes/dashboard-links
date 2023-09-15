@@ -9,7 +9,7 @@ export const Login = () => {
   const { user, singInWithGoogle } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
-    console.log(user)
+    console.log(user);
     if (user) {
       return navigate("/home");
     }
@@ -22,10 +22,12 @@ export const Login = () => {
   return (
     <Stack w={"100%"} height={"100vh"} justify={"center"} align={"center"}>
       <Stack direction={"row"}>
-        <Box maxH={"460px"}>
+        <Box maxH={"460px"} display={"flex"}>
           <img
             style={{
-              maxHeight: "460px",
+              maxHeight: "560px",
+              objectFit: "cover",
+              overflow: "visible",
             }}
             src={imageHome}
           />
