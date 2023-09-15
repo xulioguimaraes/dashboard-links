@@ -16,6 +16,7 @@ export const Home = () => {
   const pages = [
     { name: "Informações principais", path: "/informacao-principal" },
     { name: "Botões", path: "/botoes" },
+    { name: "Redes Sociais", path: "/redes-sociais" },
   ];
 
   const handleGoPAge = (path: string) => {

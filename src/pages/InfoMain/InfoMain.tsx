@@ -103,6 +103,7 @@ export const InfoMain = () => {
       toast({
         title: `Alterações salvas com sucesso`,
         status: "success",
+        variant: "left-accent",
         isClosable: true,
       });
       handleBackHome();
@@ -110,6 +111,7 @@ export const InfoMain = () => {
       toast({
         title: `${error}`,
         status: "error",
+        variant: "left-accent",
         isClosable: true,
       });
     }

@@ -4,7 +4,6 @@ import {
   Heading,
   IconButton,
   Input,
-  Skeleton,
   Stack,
   useToast,
 } from "@chakra-ui/react";
@@ -74,6 +73,7 @@ export const ButtonsPage = () => {
       toast({
         title: `Você atingiu o numero maximo de botões`,
         status: "error",
+        variant: "left-accent",
         isClosable: true,
       });
       return;
@@ -117,11 +117,13 @@ export const ButtonsPage = () => {
         title: `Alterações salvas com sucesso`,
         status: "success",
         isClosable: true,
+        variant: "left-accent",
       });
       handleBackHome();
     } catch (error) {
       toast({
         title: `${error}`,
+        variant: "left-accent",
         status: "error",
         isClosable: true,
       });

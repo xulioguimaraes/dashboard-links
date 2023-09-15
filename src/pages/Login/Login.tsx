@@ -19,6 +19,7 @@ export const Login = () => {
       return singInWithGoogle();
     }
   };
+
   return (
     <Stack w={"100%"} height={"100vh"} justify={"center"} align={"center"}>
       <Stack direction={"row"}>
@@ -49,6 +50,7 @@ export const Login = () => {
           </Stack>
           <Stack pt={20}>
             <Button
+              isDisabled={!!user}
               borderRadius={"full"}
               width={"full"}
               leftIcon={<FaGoogle />}
