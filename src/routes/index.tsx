@@ -1,7 +1,6 @@
 import { ButtonsPage } from "../pages/ButtonsPage/ButtonsPage";
 import { Home } from "../pages/Home/Home";
 import { InfoMain } from "../pages/InfoMain/InfoMain";
-import { Login } from "../pages/Login/Login";
 import { MediaSocial } from "../pages/MediaSocial/MediaSocial";
 
 export const routes = [
@@ -21,4 +20,5 @@ export const routes = [
     element: <MediaSocial />,
     path: "/redes-sociais",
   },
+  
 ];

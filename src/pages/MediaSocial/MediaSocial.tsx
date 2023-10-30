@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Center,
   Collapse,
   Divider,
   FormControl,
@@ -281,7 +282,9 @@ export const MediaSocial = () => {
       </Stack>
       {social.map((item) => {
         const active = getValues(`${item.name}.active`);
+
         const [open, setOpen] = useState(false);
+        const [openMe, setOpenMe] = useState(false);
         return (
           <Stack
             borderRadius={"base"}
@@ -313,20 +316,12 @@ export const MediaSocial = () => {
                 </Box>
                 <Text>{item.lable}</Text>
               </Stack>
-              {open ? (
-                <BsChevronUp fontWeight={"bold"} fontSize={"30px"} />
-              ) : (
-                <BsChevronDown fontWeight={"bold"} fontSize={"30px"} />
-              )}
-            </Button>
-            <Collapse in={open} unmountOnExit>
-              <Divider />
-              <Box pt={2} w={"100%"}>
+              <Center justifyContent={"space-between"} w={"130px"}>
                 <FormControl
                   w={"auto"}
                   flexWrap={"nowrap"}
                   whiteSpace={"nowrap"}
-                  pb={2}
+                  pb={0}
                   display="flex"
                   gap={3}
                   alignItems="center"
@@ -339,25 +334,42 @@ export const MediaSocial = () => {
                       <>
                         <Switch
                           {...field}
-                          id="username"
+                          id={`${item.name}.active`}
                           defaultChecked={false}
                           defaultValue={"false"}
                           isChecked={!!field.value}
                           value={field.value ? "true" : "false"}
                           onChange={(e) => {
+                            if (!field.value) {
+                              setOpen(true);
+                              setOpenMe(true);
+                            } else {
+                              setOpen(false);
+                              setOpenMe(false);
+                            }
                             field.onChange(e);
                           }}
                         />
                         <Label
-                          htmlFor="username"
+                          htmlFor={`${item.name}.active`}
                           label={!!field.value ? "Ativo" : "Desativo"}
                         />
                       </>
                     )}
                   />
                 </FormControl>
+                {open ? (
+                  <BsChevronUp fontWeight={"bold"} fontSize={"30px"} />
+                ) : (
+                  <BsChevronDown fontWeight={"bold"} fontSize={"30px"} />
+                )}
+              </Center>
+            </Button>
+            <Collapse in={open} unmountOnExit>
+              <Divider />
+              <Box pt={2} w={"100%"}>
                 <FormControl
-                  isDisabled={isSubmitting || !active}
+                  isDisabled={isSubmitting || !active || !openMe}
                   isInvalid={!!errors[item.name]?.link}
                 >
                   <Label label="Link para direcionamento" />

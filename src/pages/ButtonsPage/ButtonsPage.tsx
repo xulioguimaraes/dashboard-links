@@ -171,20 +171,20 @@ export const ButtonsPage = () => {
             onClick={handleAddButton}
             leftIcon={<RiAddLine />}
             colorScheme="whatsapp"
-            isDisabled={isSubmitted || isLoading}
+            //  isDisabled={isSubmitted || isLoading}
           >
             Adicionar Botão
           </Button>
           <Stack direction={"row"}>
             <Button
-              isDisabled={isSubmitted || isLoading}
+              //isDisabled={isSubmitted || isLoading}
               onClick={handleBackHome}
               leftIcon={<FaArrowLeft />}
             >
               Voltar
             </Button>
             <Button
-              isDisabled={isSubmitted || isLoading}
+              //         isDisabled={isSubmitted || isLoading}
               type="submit"
               colorScheme="blue"
               leftIcon={<FaSave />}
@@ -221,21 +221,23 @@ export const ButtonsPage = () => {
                     <FaTrash />
                   </IconButton>
                   <FormControl
-                    isDisabled={isSubmitted}
+                    //       isDisabled={isSubmitted}
                     isInvalid={!!errors?.buttons?.[uuid]?.name}
                   >
                     <Label label="Nome" />
                     <Input {...register(`buttons.${uuid}.name`)} size={"sm"} />
                   </FormControl>
                   <FormControl
-                    isDisabled={isSubmitted}
+                    //         isDisabled={isSubmitted}
                     isInvalid={!!errors?.buttons?.[uuid]?.link}
                   >
                     <Label label="Link" />
                     <Input {...register(`buttons.${uuid}.link`)} size={"sm"} />
                   </FormControl>
                   <Stack direction={"row"}>
-                    <FormControl isDisabled={isSubmitted}>
+                    <FormControl
+                    //  isDisabled={isSubmitted}
+                    >
                       <Label label="Cor do botão" />
                       <Input
                         {...register(`buttons.${uuid}.backgroundButton`)}
@@ -243,7 +245,10 @@ export const ButtonsPage = () => {
                         size={"sm"}
                       />
                     </FormControl>
-                    <FormControl isDisabled={isSubmitted}>
+                    <FormControl
+
+                    //  isDisabled={isSubmitted}
+                    >
                       <Label label="Cor do texto do botão" />
                       <Input
                         {...register(`buttons.${uuid}.colorTextButton`)}

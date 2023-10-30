@@ -1,26 +1,24 @@
-import { Input, Box, Image } from "@chakra-ui/react";
-import { ChangeEvent, useState } from "react";
+import { Input, Box, Image, Progress } from "@chakra-ui/react";
+import { ChangeEvent } from "react";
+
 import { CiUser } from "react-icons/ci";
-const AvatarInput = () => {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      console.log(file);
-      if (file) {
-        const imageUrl = URL.createObjectURL(file);
-        setSelectedImage(imageUrl);
-      }
-    }
-  };
-
+interface IAvatarInput {
+  handleFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  selectedImage: string | null;
+  progress: number;
+}
+const AvatarInput = ({
+  handleFileChange,
+  selectedImage,
+  progress,
+}: IAvatarInput) => {
   return (
     <Box
       position="relative"
       display="inline-block"
       maxW={"fit-content"}
-      maxHeight={"100px"}
+      maxHeight={"150px"}
       borderRadius={"full"}
       color={"gray.500"}
       border={"1px solid"}
@@ -41,15 +39,17 @@ const AvatarInput = () => {
         }}
         as="label"
         htmlFor="avatar-input"
+        overflow={"hidden"}
       >
         {!!selectedImage ? (
           <Image
             src={selectedImage || "url_da_imagem_default"}
-            boxSize="100px"
+            boxSize="150px"
             borderRadius="full"
             cursor="pointer"
             _hover={{ opacity: 0.8 }}
             alt="Avatar"
+            objectFit={"cover"}
           />
         ) : (
           <Box p={2}>
@@ -57,6 +57,9 @@ const AvatarInput = () => {
           </Box>
         )}
       </Box>
+      {progress > 0 && progress < 100 && (
+        <Progress value={progress} size="xs" colorScheme="pink" />
+      )}
     </Box>
   );
 };
