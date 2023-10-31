@@ -41,7 +41,7 @@ export function TaskList() {
   }, [handleComplete])
   useEffect(() => {
     if (user) {
-      get(child(ref(database), 'rooms/' + user?.id + "/to-do")).then((snapshot) => {
+      get(child(ref(database), 'links/' + user?.id + "/to-do")).then((snapshot) => {
         if (snapshot.exists()) {
           let task = snapshot.val() as Task[]
           task = Object.keys(task).map((index) => {
@@ -84,13 +84,13 @@ export function TaskList() {
     setHandleComplete(!handleComplete)
   }
   function writeTasks(tasksObj: Task) {
-    set(ref(database, 'rooms/' + user?.id + "/to-do/" + tasksObj.id), tasksObj);
+    set(ref(database, 'links/' + user?.id + "/to-do/" + tasksObj.id), tasksObj);
   }
   function removeTasks(id: number) {
-    remove(ref(database, 'rooms/' + user?.id + "/to-do/" + id));
+    remove(ref(database, 'links/' + user?.id + "/to-do/" + id));
   }
   function taskCompletion(tasksObj: Task) {
-    set(ref(database, 'rooms/' + user?.id + "/to-do/" + tasksObj.id), tasksObj);
+    set(ref(database, 'links/' + user?.id + "/to-do/" + tasksObj.id), tasksObj);
   }
 
   function handleRemoveTask(id: number) {
