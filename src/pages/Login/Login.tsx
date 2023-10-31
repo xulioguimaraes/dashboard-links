@@ -23,7 +23,7 @@ export const Login = () => {
   return (
     <Stack w={"100%"} height={"100vh"} justify={"center"} align={"center"}>
       <Stack direction={"row"}>
-        <Box maxH={"460px"} display={"flex"}>
+        <Box maxH={"460px"} display={["none", "flex"]}>
           <img
             style={{
               maxHeight: "560px",
@@ -33,7 +33,13 @@ export const Login = () => {
             src={imageHome}
           />
         </Box>
-        <Box p={6} maxW={"380px"} shadow={"2xl"} ml={6} borderRadius={"lg"}>
+        <Box
+          p={6}
+          maxW={"380px"}
+          shadow={"2xl"}
+          ml={[0, 6]}
+          borderRadius={"lg"}
+        >
           <Box w={"full"} display={"flex"} justifyContent={"center"}>
             <FcLink fontSize={"60px"} />
           </Box>

@@ -141,7 +141,7 @@ export const ButtonsPage = () => {
           if (snapshot.exists()) {
             let info = snapshot.val() as RegisterFormData;
             resetData(info);
-          } 
+          }
         })
         .catch((error) => {
           console.error(error);
@@ -164,7 +164,11 @@ export const ButtonsPage = () => {
         <Heading fontWeight={"semibold"} size={"sm"}>
           Botões
         </Heading>
-        <Stack direction={"row"} justify={"space-between"} align={"center"}>
+        <Stack
+          direction={["column", "row"]}
+          justify={"space-between"}
+          align={"center"}
+        >
           <Button
             onClick={handleAddButton}
             leftIcon={<RiAddLine />}

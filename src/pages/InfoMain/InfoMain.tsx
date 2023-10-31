@@ -213,7 +213,7 @@ export const InfoMain = () => {
               />
             </Box>
             <Stack direction={"row"} spacing={6}>
-              <Stack direction={"row"} w={"full"}>
+              <Stack direction={["row"]} w={"full"}>
                 <FormControl
                   isDisabled={isSubmitting}
                   isRequired
@@ -237,7 +237,7 @@ export const InfoMain = () => {
                 </FormControl>
               </Stack>
             </Stack>
-            <Stack direction={"row"} gap={4}>
+            <Stack direction={["column", "row"]} gap={4}>
               <FormControl
                 w={"auto"}
                 flexWrap={"nowrap"}
@@ -267,37 +267,42 @@ export const InfoMain = () => {
                   )}
                 />
               </FormControl>
-              <FormControl
-                w={"full"}
-                isDisabled={addIstagram || isSubmitting}
-                isRequired={!addIstagram}
-                isInvalid={!!errors.instagram}
-              >
-                <Label label=" Seu principal @" />
-                <Input
-                  {...register("instagram", {
-                    required: !addIstagram,
-                  })}
-                  size={"sm"}
-                  type="text"
-                />
-                {!!errors.instagram && (
-                  <FormErrorMessage fontSize={"xs"}>
-                    {errors.instagram.message}
-                  </FormErrorMessage>
-                )}
-                <FormHelperText fontSize={"12px"}>
-                  Não é necessário adicionar o "@"
-                </FormHelperText>
-              </FormControl>
-              <FormControl maxWidth={"90px"} isDisabled={isSubmitting}>
-                <Label label="Cor do Texto" />
-                <Input
-                  {...register("colorTextInstagram")}
-                  type="color"
-                  size={"sm"}
-                />
-              </FormControl>
+              <Stack direction={["row"]}>
+                <FormControl
+                  w={"full"}
+                  isDisabled={addIstagram || isSubmitting}
+                  isRequired={!addIstagram}
+                  isInvalid={!!errors.instagram}
+                >
+                  <Label label=" Seu principal @" />
+                  <Input
+                    {...register("instagram", {
+                      required: !addIstagram,
+                    })}
+                    size={"sm"}
+                    type="text"
+                  />
+                  {!!errors.instagram && (
+                    <FormErrorMessage fontSize={"xs"}>
+                      {errors.instagram.message}
+                    </FormErrorMessage>
+                  )}
+                  <FormHelperText fontSize={"12px"}>
+                    Não é necessário adicionar o "@"
+                  </FormHelperText>
+                </FormControl>
+                <FormControl
+                  maxWidth={"90px"}
+                  isDisabled={addIstagram || isSubmitting}
+                >
+                  <Label label="Cor do Texto" />
+                  <Input
+                    {...register("colorTextInstagram")}
+                    type="color"
+                    size={"sm"}
+                  />
+                </FormControl>
+              </Stack>
             </Stack>
             <Stack direction={"row"}>
               <FormControl isDisabled={isSubmitting}>
