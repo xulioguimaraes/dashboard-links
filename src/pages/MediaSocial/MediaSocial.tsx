@@ -187,8 +187,6 @@ export const MediaSocial = () => {
           if (snapshot.exists()) {
             let info = snapshot.val() as RegisterFormData;
             resetData(info);
-          } else {
-            console.log("No data available");
           }
         })
         .catch((error) => {
@@ -220,7 +218,6 @@ export const MediaSocial = () => {
     socialMediaKeys.forEach((item: SocialMediaKey) => {
       if (!!data[item].active) {
         if (!data[item].link) {
-          console.log("link vazio");
           setError(`${item}.link`, {
             message: "Necessario preencher o link com um valor valido",
           });

@@ -107,8 +107,6 @@ export const InfoMain = () => {
           if (snapshot.exists()) {
             let info = snapshot.val() as RegisterFormData;
             resetData(info);
-          } else {
-            console.log("No data available");
           }
         })
         .catch((error) => {
@@ -146,7 +144,6 @@ export const InfoMain = () => {
         getDownloadURL(storageRef2)
           .then((url) => {
             // O URL da imagem está disponível aqui
-            console.log("URL da imagem:", url);
 
             if (isURL(url)) {
               setSelectedImage(url);

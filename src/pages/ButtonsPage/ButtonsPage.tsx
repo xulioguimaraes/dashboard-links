@@ -141,9 +141,7 @@ export const ButtonsPage = () => {
           if (snapshot.exists()) {
             let info = snapshot.val() as RegisterFormData;
             resetData(info);
-          } else {
-            console.log("No data available");
-          }
+          } 
         })
         .catch((error) => {
           console.error(error);

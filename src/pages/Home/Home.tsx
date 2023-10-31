@@ -61,7 +61,12 @@ export const Home = () => {
         ))}
       </Stack>
       <Center mt={4}>
-        <Button colorScheme="blue" leftIcon={<BsFillSendFill />}>
+        <Button
+          as={"a"}
+          href={`${import.meta.env.VITE_API_SITE_URL}/${user?.id}`}
+          colorScheme="blue"
+          leftIcon={<BsFillSendFill />}
+        >
           Ir para pagina
         </Button>
       </Center>
@@ -76,7 +81,7 @@ export const Home = () => {
         <Box position={"relative"} width="375px" height="667px">
           <iframe
             title="Site emulado"
-            src={`http://localhost:3002/${user?.id}`}
+            src={`${import.meta.env.VITE_API_SITE_URL}/${user?.id}`}
             style={{
               width: "99%",
               height: "100%",
