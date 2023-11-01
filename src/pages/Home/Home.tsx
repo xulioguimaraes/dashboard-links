@@ -1,13 +1,25 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import { Box, Button, Center, Heading, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Heading,
+  IconButton,
+  Stack,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 import { BsFillSendFill, BsPeopleFill } from "react-icons/bs";
 import { CiGrid2H } from "react-icons/ci";
 import { MdFormatAlignJustify } from "react-icons/md";
+import { FaCopy } from "react-icons/fa";
 export const Home = () => {
   const { user, singOutGoogle } = useAuth();
   const navigate = useNavigate();
+  const toast = useToast();
+
   useEffect(() => {
     if (!user) {
       singOutGoogle();
@@ -26,6 +38,22 @@ export const Home = () => {
 
   const handleGoPage = (path: string) => {
     navigate(path);
+  };
+  const linkFromUser = `${import.meta.env.VITE_API_SITE_URL}/${user?.id}`;
+  const copyToClipboard = () => {
+    const textArea = document.createElement("textarea");
+    textArea.value = linkFromUser;
+    document.body.appendChild(textArea);
+    textArea.select();
+    textArea.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    document.body.removeChild(textArea);
+    toast({
+      title: `Link copiado para a área de transferência!`,
+      status: "success",
+      isClosable: true,
+      variant: "left-accent",
+    });
   };
   return (
     <>
@@ -60,15 +88,18 @@ export const Home = () => {
           </Button>
         ))}
       </Stack>
-      <Center mt={4}>
+      <Center mt={4} gap={2}>
         <Button
           as={"a"}
-          href={`${import.meta.env.VITE_API_SITE_URL}/${user?.id}`}
+          href={linkFromUser}
           colorScheme="blue"
           leftIcon={<BsFillSendFill />}
         >
           Ir para pagina
         </Button>
+        <IconButton onClick={copyToClipboard} aria-label={"Botão para copiar"}>
+          <FaCopy />
+        </IconButton>
       </Center>
 
       <Box
@@ -81,7 +112,7 @@ export const Home = () => {
         <Box position={"relative"} width="375px" height="667px">
           <iframe
             title="Site emulado"
-            src={`${import.meta.env.VITE_API_SITE_URL}/${user?.id}`}
+            src={linkFromUser}
             style={{
               width: "99%",
               height: "100%",
