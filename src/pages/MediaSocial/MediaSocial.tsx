@@ -232,6 +232,8 @@ export const MediaSocial = () => {
         } else {
           seedContinue = true;
         }
+      } else {
+        seedContinue = true;
       }
     });
     if (!seedContinue) {
