@@ -41,6 +41,7 @@ const registerFormSchema = z.object({
   colorTextInstagram: z.string().optional(),
   colorTextResume: z.string().optional(),
   urlImage: z.string().optional(),
+  nameImage: z.string().optional(),
 });
 
 export type RegisterFormData = z.infer<typeof registerFormSchema>;
@@ -66,6 +67,7 @@ export const InfoMain = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [nameImage, setNameImage] = useState<string>("");
+  const [urlImage, setUrlImage] = useState<string>("");
   const [progress, setProgress] = useState(0);
   const { user } = useAuth();
   const toast = useToast();
@@ -94,6 +96,8 @@ export const InfoMain = () => {
   const resetData = (data: RegisterFormData) => {
     if (isURL(data?.urlImage)) {
       setSelectedImage(String(data.urlImage));
+      setUrlImage(String(data.urlImage));
+      setNameImage(String(data.nameImage));
     }
     setAddInstagram(!data.addIstagram);
     reset(data);
@@ -124,42 +128,50 @@ export const InfoMain = () => {
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (file) {
-        const nameFromImage = `images-link/${user?.id}-${file.name}`;
-        const storageRef = refStorage(storage, nameFromImage);
-
-        const metadata = {
-          contentType: file.type,
-        };
-        const blob = new Blob([file], { type: file.type });
-        const uploadImage = uploadBytesResumable(storageRef, blob, metadata);
-        uploadImage.on("state_changed", (snapShot) => {
-          const progressFile =
-            (snapShot.bytesTransferred / snapShot.totalBytes) * 100;
-
-          setProgress(progressFile);
+      if (file.size > 1024 * 1024) {
+        toast({
+          title: `Error ao carregar arquivo`,
+          description:
+            "O arquivo é maior que 1MB. Por favor, selecione um arquivo menor.",
+          status: "error",
+          variant: "left-accent",
+          isClosable: true,
         });
-
-        const storageRef2 = refStorage(storage, nameFromImage);
-        getDownloadURL(storageRef2)
-          .then((url) => {
-            // O URL da imagem está disponível aqui
-
-            if (isURL(url)) {
-              setSelectedImage(url);
-              setNameImage(url);
-            }
-            // Faça algo com o URL, como exibi-lo na interface do usuário
-          })
-          .catch((error) => {
-            console.error("Erro ao obter o URL da imagem:", error);
-          });
+        return;
       }
+
+      const nameFromImage = `${user?.id}-${file.name}`;
+      const storageRef = refStorage(storage, nameFromImage);
+
+      const metadata = {
+        contentType: file.type,
+      };
+      const blob = new Blob([file], { type: file.type });
+      const uploadImage = uploadBytesResumable(storageRef, blob, metadata);
+      uploadImage.on("state_changed", (snapShot) => {
+        const progressFile =
+          (snapShot.bytesTransferred / snapShot.totalBytes) * 100;
+
+        setProgress(progressFile);
+      });
+      setNameImage(nameFromImage);
+      const storageRef2 = refStorage(storage, nameFromImage);
+      getDownloadURL(storageRef2)
+        .then((url) => {
+          if (isURL(url)) {
+            setUrlImage(url);
+            setSelectedImage(url);
+          }
+        })
+        .catch((error) => {
+          console.error("Erro ao obter o URL da imagem:", error);
+        });
     }
   };
   function writeJob(data: RegisterFormData) {
     set(ref(database, "links/" + user?.id + "/" + FOLDER), data);
   }
+
   const handleRegister = async (data: RegisterFormData) => {
     if (!addIstagram && !data.instagram) {
       setError("instagram", { message: "Necessario preencher " });
@@ -167,7 +179,8 @@ export const InfoMain = () => {
     }
     const formttedData = {
       ...data,
-      urlImage: nameImage,
+      urlImage,
+      nameImage,
     };
     try {
       writeJob(formttedData);
@@ -178,7 +191,7 @@ export const InfoMain = () => {
         isClosable: true,
       });
       handleBackHome();
-      setNameImage("");
+      setUrlImage("");
     } catch (error) {
       toast({
         title: `${error}`,
@@ -267,7 +280,7 @@ export const InfoMain = () => {
                   )}
                 />
               </FormControl>
-              <Stack direction={["row"]}>
+              <Stack w={"100%"} direction={["row"]}>
                 <FormControl
                   w={"full"}
                   isDisabled={addIstagram || isSubmitting}
