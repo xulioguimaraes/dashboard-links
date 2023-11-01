@@ -39,7 +39,7 @@ export const Home = () => {
   const handleGoPage = (path: string) => {
     navigate(path);
   };
-  const linkFromUser = `${import.meta.env.VITE_API_SITE_URL}/${user?.id}`;
+  const linkFromUser = `${import.meta.env.VITE_API_SITE_URL}${user?.id}`;
   const copyToClipboard = () => {
     const textArea = document.createElement("textarea");
     textArea.value = linkFromUser;
