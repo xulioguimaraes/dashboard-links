@@ -2,15 +2,22 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { FaGoogle } from "react-icons/fa";
-import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Heading, Stack, Text, useToast } from "@chakra-ui/react";
 import imageHome from "../../images/login.png";
 import { FcLink } from "react-icons/fc";
 export const Login = () => {
   const { user, singInWithGoogle } = useAuth();
+  const toast = useToast();
   const navigate = useNavigate();
   useEffect(() => {
-    console.log(user);
     if (user) {
+      toast({
+        title: `Bem vindo, ${user.name}`,
+        status: "success",
+        variant: "left-accent",
+        isClosable: true,
+      });
+
       return navigate("/home");
     }
   }, [user]);

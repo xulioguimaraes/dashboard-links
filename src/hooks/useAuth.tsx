@@ -27,6 +27,18 @@ type AuthContextType = {
   singOutGoogle: () => void;
 };
 type WriteUserDataType = {};
+function stringToSlug(str: string) {
+  // Remove acentos e caracteres especiais
+  str = str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+  // Converte para letras minúsculas e substitui espaços por hífens
+  str = str.toLowerCase().replace(/ /g, "-");
+
+  // Remove caracteres não alfanuméricos e hífens duplicados
+  str = str.replace(/[^a-z0-9-]/g, "").replace(/-+/g, "-");
+
+  return str;
+}
 
 const AuthContext = createContext({} as AuthContextType);
 interface IChildren {

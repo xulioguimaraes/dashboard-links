@@ -23,6 +23,7 @@ import {
   BsTwitch,
   BsTwitter,
   BsWhatsapp,
+  BsYoutube,
 } from "react-icons/bs";
 import { ImFacebook2 } from "react-icons/im";
 import { z } from "zod";
@@ -40,6 +41,7 @@ type SocialMediaKey =
   | "discord"
   | "whatsapp"
   | "twitch"
+  | "youtube"
   | "twitter";
 
 interface SocialProps {
@@ -50,6 +52,7 @@ interface SocialProps {
     | "discord"
     | "whatsapp"
     | "twitch"
+    | "youtube"
     | "twitter";
 
   icon: ReactNode;
@@ -110,6 +113,13 @@ const social: SocialProps[] = [
     color: "#1DA1F2",
     icon: <BsTwitter fontSize={"40px"} />,
   },
+
+  {
+    name: "youtube",
+    lable: "Youtube",
+    color: "#c4302b",
+    icon: <BsYoutube fontSize={"40px"} />,
+  },
 ];
 
 const socialMediaSchema = z.object({
@@ -123,6 +133,7 @@ const registerFormSchema = z.object({
   discord: socialMediaSchema,
   whatsapp: socialMediaSchema,
   twitch: socialMediaSchema,
+  youtube: socialMediaSchema,
   twitter: socialMediaSchema,
 });
 
@@ -172,6 +183,10 @@ export const MediaSocial = () => {
         active: false,
         link: "",
       },
+      youtube: {
+        active: false,
+        link: "",
+      },
     },
     resolver: zodResolver(registerFormSchema),
   });
@@ -214,6 +229,7 @@ export const MediaSocial = () => {
       "whatsapp",
       "twitch",
       "twitter",
+      "youtube",
     ];
     socialMediaKeys.forEach((item: SocialMediaKey) => {
       if (!!data[item].active) {
@@ -315,7 +331,7 @@ export const MediaSocial = () => {
                 </Box>
                 <Text>{item.lable}</Text>
               </Stack>
-              <Center justifyContent={"space-between"} w={"130px"}>
+              <Center justifyContent={"space-between"} w={"75px"}>
                 <FormControl
                   w={"auto"}
                   flexWrap={"nowrap"}
@@ -348,10 +364,6 @@ export const MediaSocial = () => {
                             }
                             field.onChange(e);
                           }}
-                        />
-                        <Label
-                          htmlFor={`${item.name}.active`}
-                          label={!!field.value ? "Ativo" : "Desativo"}
                         />
                       </>
                     )}
