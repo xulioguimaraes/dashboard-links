@@ -30,7 +30,7 @@ export const Login = () => {
   return (
     <Stack w={"100%"} height={"100vh"} justify={"center"} align={"center"}>
       <Stack direction={"row"}>
-        <Box maxH={"460px"} display={["none", "flex"]}>
+        <Box maxH={"460px"} display={["none", "none", "flex"]}>
           <img
             style={{
               maxHeight: "560px",
@@ -44,7 +44,7 @@ export const Login = () => {
           p={6}
           maxW={"380px"}
           shadow={"2xl"}
-          ml={[0, 6]}
+          ml={[0, 0, 6]}
           borderRadius={"lg"}
         >
           <Box w={"full"} display={"flex"} justifyContent={"center"}>
